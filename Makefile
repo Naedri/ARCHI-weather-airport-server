@@ -1,5 +1,5 @@
 build:
 	go build -o ./bin/ ./...
 
-temperature:
-	go run cmd/temperature/main.go
+probe:
+	go run cmd/probe/main.go
