@@ -17,7 +17,7 @@ import (
 var qos, _ = strconv.Atoi(os.Getenv("MQTT_QOS"))
 var clientID = os.Getenv("MQTT_CLIENT_ID")
 var IATA = os.Getenv("IATA")
-var probeDataType = os.Getenv("PROBE_DATATYPE")
+var probeDataType = utils.GetDataTypeFromEnv()
 var probeID = os.Getenv("PROBE_ID")
 var conn redis.Conn
 
