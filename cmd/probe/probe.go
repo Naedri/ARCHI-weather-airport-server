@@ -18,7 +18,6 @@ var clientID = os.Getenv("MQTT_BROKER_URL")
 var IATA = os.Getenv("IATA")
 var probeDataType = os.Getenv("PROBE_DATATYPE")
 var probeID = os.Getenv("PROBE_ID")
-var deltaTime = 10
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -49,7 +48,7 @@ type ProbeMessage struct {
 	key       string
 	data      float64
 	dataType  string
-	timestamp time.Time
+	timestamp int64
 }
 
 func (probe *Probe) readProbe() (value float64) {
@@ -58,6 +57,11 @@ func (probe *Probe) readProbe() (value float64) {
 	probe.delta += 0.1
 	probe.lastRead = time.Now()
 	return v
+}
+
+func init() {
+	// Register the probe to redis
+	utils.HSET("probes", probeID, []byte(probeID))
 }
 
 func main() {
@@ -76,21 +80,21 @@ func main() {
 
 	for {
 		value := ProbeMessage{
-			key:       m.topic,
+			key:       fmt.Sprintf("%s/probe/%s", IATA, probeDataType),
 			data:      probe.readProbe(),
 			dataType:  probeDataType,
-			timestamp: time.Now(),
+			timestamp: time.Now().UnixMilli(),
 		}
 
 		// ${IATA}:probe:${probtype}:${probeId}
 		valueJSONFormated := fmt.Sprintf(`
 		{
-			"key":"%s",
+			"IATA":"%s",
 			"data":"%f",
 			"dataType":"%s",
-			"timestamp":"%s",
+			"timestamp":"%d",
 			"id": "%s"
-		}`, value.key, value.data, value.dataType, value.timestamp, probeID)
+		}`, IATA, value.data, value.dataType, value.timestamp, probeID)
 
 		fmt.Printf("%s\n", valueJSONFormated)
 
