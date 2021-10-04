@@ -16,7 +16,6 @@ import (
 )
 
 var qos, _ = strconv.Atoi(os.Getenv("MQTT_QOS"))
-var clientID = os.Getenv("MQTT_BROKER_URL")
 var IATA = os.Getenv("IATA")
 var probeDataType = os.Getenv("PROBE_DATATYPE")
 var probeID = os.Getenv("PROBE_ID")
@@ -58,14 +57,7 @@ func main() {
 
 	var m *MqttConnection = &MqttConnection{}
 	probe := Probe{probeType: probeDataType, lastRead: time.Now(), id: probeID, delta: 0}
-	m.client = utils.SetupClient(clientID, messagePubHandler, connectHandler, connectionLostHandler)
-
-	token := m.client.Connect()
-	for token.Wait() && token.Error() != nil {
-		fmt.Printf("token error : %s\n", token.Error())
-		time.Sleep(time.Second * 10)
-		token = m.client.Connect()
-	}
+	m.client = utils.GetDefaultClient(messagePubHandler, connectHandler, connectionLostHandler)
 
 	m.topic = fmt.Sprintf("%s/probe/%s/%s", IATA, probeDataType, probeID)
 
