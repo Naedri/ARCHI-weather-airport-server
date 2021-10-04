@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"meteo_des_aeroports/internal/model"
@@ -61,6 +62,8 @@ func main() {
 
 	token := m.client.Connect()
 	for token.Wait() && token.Error() != nil {
+		fmt.Printf("token error : %s\n", token.Error())
+		time.Sleep(time.Second * 10)
 		token = m.client.Connect()
 	}
 
@@ -72,17 +75,11 @@ func main() {
 			Data:      probe.readProbe(),
 			DataType:  probeDataType,
 			Timestamp: time.Now(),
+			Id:        probeID,
 		}
 
 		// ${IATA}:probe:${probtype}:${probeId}
-		valueJSONFormated := fmt.Sprintf(`
-		{
-			"Key":"%s",
-			"Data":"%f",
-			"DataType":"%s",
-			"Timestamp":"%s",
-			"Id": "%s"
-		}`, value.Key, value.Data, value.DataType, value.Timestamp, probeID)
+		valueJSONFormated, _ := json.Marshal(value)
 
 		fmt.Printf("%s\n", valueJSONFormated)
 

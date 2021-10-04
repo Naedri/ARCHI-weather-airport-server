@@ -8,6 +8,7 @@ import (
 	"meteo_des_aeroports/internal/utils"
 	"os"
 	"strconv"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/gomodule/redigo/redis"
@@ -65,9 +66,10 @@ func main() {
 	client := utils.SetupClient(clientID, messagePubHandler, connectHandler, connectionLostHandler)
 
 	token := client.Connect()
-	if token.Wait() && token.Error() != nil {
-		// TODO change panic and retry to connect
-		panic(token.Error())
+	for token.Wait() && token.Error() != nil {
+		fmt.Printf("token error : %s\n", token.Error())
+		time.Sleep(time.Second * 10)
+		token = client.Connect()
 	}
 
 	topic := fmt.Sprintf("%s/+/%s/%s", IATA, probeDataType, probeID)
