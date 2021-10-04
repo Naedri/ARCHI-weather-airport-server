@@ -33,11 +33,6 @@ var connectionLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, 
 	fmt.Printf("Connection lost: %v", err)
 }
 
-type MqttConnection struct {
-	client mqtt.Client
-	topic  string
-}
-
 type Probe struct {
 	probeType string
 	lastRead  time.Time
@@ -54,16 +49,15 @@ func (probe *Probe) readProbe() (value float64) {
 }
 
 func main() {
-
-	var m *MqttConnection = &MqttConnection{}
 	probe := Probe{probeType: probeDataType, lastRead: time.Now(), id: probeID, delta: 0}
-	m.client = utils.GetDefaultClient(messagePubHandler, connectHandler, connectionLostHandler)
-
-	m.topic = fmt.Sprintf("%s/probe/%s/%s", IATA, probeDataType, probeID)
+	m := utils.MqttConnection{
+		Client: utils.GetDefaultClient(messagePubHandler, connectHandler, connectionLostHandler),
+		Topic:  fmt.Sprintf("%s/probe/%s/%s", IATA, probeDataType, probeID),
+	}
 
 	for {
 		value := model.ProbeMessage{
-			Key:       m.topic,
+			Key:       m.Topic,
 			Data:      probe.readProbe(),
 			DataType:  probeDataType,
 			Timestamp: time.Now(),
@@ -75,7 +69,7 @@ func main() {
 
 		fmt.Printf("%s\n", valueJSONFormated)
 
-		m.client.Publish(m.topic, byte(qos), false, valueJSONFormated)
+		m.Client.Publish(m.Topic, byte(qos), false, valueJSONFormated)
 
 		time.Sleep(time.Second)
 		// time.Sleep(time.Second * time.Duration(deltaTime))

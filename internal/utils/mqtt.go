@@ -10,28 +10,27 @@ import (
 )
 
 type MqttConnection struct {
-	client mqtt.Client
-	topic  string
+	Client mqtt.Client
+	Topic  string
 }
 
 var brokerURL = os.Getenv("MQTT_BROKER_URL")
 var clientID = os.Getenv("MQTT_BROKER_URL")
 
-//creation and connection of a mqtt client
+//creation and connection of a mqtt Client
 func createClient(options *mqtt.ClientOptions) mqtt.Client {
-	client := mqtt.NewClient(options)
-	token := client.Connect()
+	Client := mqtt.NewClient(options)
+	token := Client.Connect()
 	if token.Wait() && token.Error() != nil {
 		fmt.Printf("token error : %s\n", token.Error())
 		time.Sleep(time.Second * 10)
-		token = client.Connect()
+		token = Client.Connect()
 	}
-	return client
+	return Client
 }
 
-//setting the options for the client
+//setting the options for the Client
 func setUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
-
 	options := mqtt.NewClientOptions()
 	options.AddBroker(brokerURL)
 

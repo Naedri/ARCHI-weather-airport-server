@@ -12,25 +12,26 @@ type Retryer struct {
 }
 
 func newRetryer(maxRetryTimes int, tickInterval time.Duration, timeout time.Duration, retryAction func() (bool, error), errorHandler func()) *Retryer {
-	retryer := new(Retryer)
-	retryer.maxRetryTimes = maxRetryTimes
-	retryer.tickInterval = tickInterval
-	retryer.timeout = timeout
-	retryer.retryAction = retryAction
-	retryer.errorHandler = errorHandler
-	retryer.tick = func() {
-		for i := 0; i < maxRetryTimes; i++ {
-			time.Sleep(tickInterval)
-			state, err := retryAction()
-			if err != nil {
-				errorHandler()
+	retryer := Retryer{
+		maxRetryTimes: maxRetryTimes,
+		tickInterval:  tickInterval,
+		timeout:       timeout,
+		retryAction:   retryAction,
+		errorHandler:  errorHandler,
+		tick: func() {
+			for i := 0; i < maxRetryTimes; i++ {
+				time.Sleep(tickInterval)
+				state, err := retryAction()
+				if err != nil {
+					errorHandler()
+				}
+				if state {
+					return
+				}
 			}
-			if state {
-				return
-			}
-		}
+		},
 	}
-	return retryer
+	return &retryer
 }
 
 func newDefaultRetryer(actionHandler func() (bool, error), errorHandler func()) *Retryer {
