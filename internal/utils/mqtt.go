@@ -15,7 +15,7 @@ type MqttConnection struct {
 }
 
 var brokerURL = os.Getenv("MQTT_BROKER_URL")
-var clientID = os.Getenv("MQTT_BROKER_URL")
+var clientID = os.Getenv("MQTT_CLIENT_ID")
 
 //creation and connection of a mqtt Client
 func createClient(options *mqtt.ClientOptions) mqtt.Client {
@@ -30,7 +30,7 @@ func createClient(options *mqtt.ClientOptions) mqtt.Client {
 }
 
 //setting the options for the Client
-func setUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
+func SetUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
 	options := mqtt.NewClientOptions()
 	options.AddBroker(brokerURL)
 
@@ -44,10 +44,11 @@ func setUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler,
 }
 
 func GetClient(brokerURL string, clientID string, defaultMessagePubHandler mqtt.MessageHandler, connectHandler mqtt.OnConnectHandler, connectionLostHandler mqtt.ConnectionLostHandler) mqtt.Client {
-	options := setUpClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
+	options := SetUpClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
 	return createClient(options)
 }
 
 func GetDefaultClient(defaultMessagePubHandler mqtt.MessageHandler, connectHandler mqtt.OnConnectHandler, connectionLostHandler mqtt.ConnectionLostHandler) mqtt.Client {
+	fmt.Printf("client id:%s\nbroker: %s\n", clientID, brokerURL)
 	return GetClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
 }
