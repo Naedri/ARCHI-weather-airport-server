@@ -67,6 +67,7 @@ func main() {
 			DataType:  probeDataType,
 			Timestamp: timeToString,
 			Id:        probeID,
+			IATA:      IATA,
 		}
 
 		// ${IATA}:probe:${probtype}:${probeId}

@@ -15,7 +15,7 @@ type MqttConnection struct {
 }
 
 var brokerURL = os.Getenv("MQTT_BROKER_URL")
-var clientID = os.Getenv("MQTT_BROKER_URL")
+var clientID = os.Getenv("MQTT_CLIENT_ID")
 
 //creation and connection of a mqtt Client
 func createClient(options *mqtt.ClientOptions) mqtt.Client {
@@ -49,5 +49,6 @@ func GetClient(brokerURL string, clientID string, defaultMessagePubHandler mqtt.
 }
 
 func GetDefaultClient(defaultMessagePubHandler mqtt.MessageHandler, connectHandler mqtt.OnConnectHandler, connectionLostHandler mqtt.ConnectionLostHandler) mqtt.Client {
+	fmt.Printf("client id:%s\nbroker: %s\n", clientID, brokerURL)
 	return GetClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
 }
