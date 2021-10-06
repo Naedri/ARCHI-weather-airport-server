@@ -41,7 +41,7 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	//Redis key: ${IATA}:probe:${dataType}:${probeID}
 	redisKey := fmt.Sprintf("%s:probe:%s:%s", toJson.IATA, toJson.DataType, toJson.Id)
 	fmt.Println(redisKey)
-	value := fmt.Sprintf("%.2f:%s", toJson.Data, toJson.Timestamp)
+	value := fmt.Sprintf("%.2f", toJson.Data)
 	utils.ZSet(redisKey, toJson.Timestamp, value)
 }
 

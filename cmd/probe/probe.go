@@ -60,8 +60,8 @@ func main() {
 		Topic:  fmt.Sprintf("%s/probe/%s/%s", IATA, probeDataType, probeID),
 	}
 
-	timeToString := strconv.Itoa(int(time.Now().UnixMilli()))
 	for {
+		timeToString := strconv.Itoa(int(time.Now().UnixMilli()))
 		value := model.ProbeMessage{
 			Data:      probe.readProbe(),
 			DataType:  probeDataType,
