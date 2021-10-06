@@ -46,7 +46,6 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	t := toJson.Timestamp
 	dateValue, _ := time.Parse("2006-01-02-15-04-05", t)
 	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
-	fmt.Printf("date:%s\n", dateToUnixMilli)
 	utils.ZSet(redisKey, dateToUnixMilli, value)
 }
 

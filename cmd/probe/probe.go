@@ -66,10 +66,10 @@ func main() {
 
 	for {
 		t := time.Now()
-		// YYYY-MM-DD-hh-mm-ss
 		value := model.ProbeMessage{
 			Data:     probe.readProbe(),
 			DataType: probeDataType,
+			// YYYY-MM-DD-hh-mm-ss
 			Timestamp: fmt.Sprintf("%d-%02d-%02d-%02d-%02d-%02d",
 				t.Year(), t.Month(), t.Day(),
 				t.Hour(), t.Minute(), t.Second()),
