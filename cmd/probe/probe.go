@@ -48,6 +48,11 @@ func (probe *Probe) readProbe() (value float64) {
 	return v
 }
 
+func init() {
+	// Register the probe to redis
+	utils.HSET("probes", probeID, []byte(probeID))
+}
+
 func main() {
 	probe := Probe{probeType: probeDataType, lastRead: time.Now(), id: probeID, delta: 0}
 	m := utils.MqttConnection{
@@ -55,12 +60,12 @@ func main() {
 		Topic:  fmt.Sprintf("%s/probe/%s/%s", IATA, probeDataType, probeID),
 	}
 
+	timeToString := strconv.Itoa(int(time.Now().UnixMilli()))
 	for {
 		value := model.ProbeMessage{
-			Key:       m.Topic,
 			Data:      probe.readProbe(),
 			DataType:  probeDataType,
-			Timestamp: time.Now(),
+			Timestamp: timeToString,
 			Id:        probeID,
 		}
 

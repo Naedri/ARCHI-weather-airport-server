@@ -30,7 +30,7 @@ func createClient(options *mqtt.ClientOptions) mqtt.Client {
 }
 
 //setting the options for the Client
-func setUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
+func SetUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
 	options := mqtt.NewClientOptions()
 	options.AddBroker(brokerURL)
 
@@ -44,7 +44,7 @@ func setUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler,
 }
 
 func GetClient(brokerURL string, clientID string, defaultMessagePubHandler mqtt.MessageHandler, connectHandler mqtt.OnConnectHandler, connectionLostHandler mqtt.ConnectionLostHandler) mqtt.Client {
-	options := setUpClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
+	options := SetUpClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
 	return createClient(options)
 }
 
