@@ -50,7 +50,7 @@ func (probe *Probe) readProbe() (value float64) {
 
 func init() {
 	// Register the probe to redis
-	utils.HSET("probes", probeID, []byte(probeID))
+	utils.HSET(fmt.Sprintf("%s:probes", IATA), probeID, []byte("true"))
 }
 
 func main() {
