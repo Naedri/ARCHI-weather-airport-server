@@ -27,5 +27,5 @@ func GetDataTypeFromEnv() string {
 }
 
 func (d DataType) String() string {
-	return [...]string{"Temperature", "Atmospheric Pressure", "Wind Speed"}[d]
+	return [...]string{"temperature", "atmospheric_pressure", "wind_speed"}[d]
 }

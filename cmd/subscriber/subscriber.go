@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	_ "github.com/joho/godotenv/autoload"
@@ -43,7 +44,10 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	redisKey := fmt.Sprintf("%s:probe:%s:%s", toJson.IATA, toJson.DataType, toJson.Id)
 	fmt.Println(redisKey)
 	value := fmt.Sprintf("%.2f", toJson.Data)
-	utils.ZSet(redisKey, toJson.Timestamp, value)
+	t := toJson.Timestamp
+	dateValue, _ := time.Parse("2006-01-02-15-04-05", t)
+	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
+	utils.ZSet(redisKey, dateToUnixMilli, value)
 }
 
 func main() {
