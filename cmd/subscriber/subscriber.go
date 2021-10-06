@@ -6,7 +6,10 @@ import (
 	"meteo_des_aeroports/internal/model"
 	"meteo_des_aeroports/internal/utils"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
+	"time"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	_ "github.com/joho/godotenv/autoload"
@@ -14,9 +17,8 @@ import (
 
 var (
 	qos, _        = strconv.Atoi(os.Getenv("MQTT_QOS"))
-	clientID      = os.Getenv("MQTT_CLIENT_ID")
 	IATA          = os.Getenv("IATA")
-	probeDataType = os.Getenv("PROBE_DATATYPE")
+	probeDataType = utils.GetDataTypeFromEnv()
 	probeID       = os.Getenv("PROBE_ID")
 )
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
@@ -42,10 +44,16 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	redisKey := fmt.Sprintf("%s:probe:%s:%s", toJson.IATA, toJson.DataType, toJson.Id)
 	fmt.Println(redisKey)
 	value := fmt.Sprintf("%.2f", toJson.Data)
-	utils.ZSet(redisKey, toJson.Timestamp, value)
+	t := toJson.Timestamp
+	dateValue, _ := time.Parse("2006-01-02-15-04-05", t)
+	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
+	utils.ZSet(redisKey, dateToUnixMilli, value)
 }
 
 func main() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
 	client := utils.GetDefaultClient(messagePubHandler, connectHandler, connectionLostHandler)
 
 	topic := fmt.Sprintf("%s/+/%s/%s", IATA, probeDataType, probeID)
@@ -55,8 +63,6 @@ func main() {
 	subToken.Wait()
 
 	fmt.Printf("Subscribed to topic %s", topic)
-
-	for {
-	}
+	<-c
 
 }
