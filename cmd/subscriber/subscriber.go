@@ -6,7 +6,9 @@ import (
 	"meteo_des_aeroports/internal/model"
 	"meteo_des_aeroports/internal/utils"
 	"os"
+	"os/signal"
 	"strconv"
+	"syscall"
 
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	_ "github.com/joho/godotenv/autoload"
@@ -14,7 +16,6 @@ import (
 
 var (
 	qos, _        = strconv.Atoi(os.Getenv("MQTT_QOS"))
-	clientID      = os.Getenv("MQTT_CLIENT_ID")
 	IATA          = os.Getenv("IATA")
 	probeDataType = utils.GetDataTypeFromEnv()
 	probeID       = os.Getenv("PROBE_ID")
@@ -46,6 +47,9 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 }
 
 func main() {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+
 	client := utils.GetDefaultClient(messagePubHandler, connectHandler, connectionLostHandler)
 
 	topic := fmt.Sprintf("%s/+/%s/%s", IATA, probeDataType, probeID)
@@ -55,8 +59,6 @@ func main() {
 	subToken.Wait()
 
 	fmt.Printf("Subscribed to topic %s", topic)
-
-	for {
-	}
+	<-c
 
 }
