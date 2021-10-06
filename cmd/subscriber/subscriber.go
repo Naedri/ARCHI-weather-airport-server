@@ -16,7 +16,7 @@ var (
 	qos, _        = strconv.Atoi(os.Getenv("MQTT_QOS"))
 	clientID      = os.Getenv("MQTT_CLIENT_ID")
 	IATA          = os.Getenv("IATA")
-	probeDataType = os.Getenv("PROBE_DATATYPE")
+	probeDataType = utils.GetDataTypeFromEnv()
 	probeID       = os.Getenv("PROBE_ID")
 )
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
