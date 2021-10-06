@@ -19,7 +19,6 @@ var qos, _ = strconv.Atoi(os.Getenv("MQTT_QOS"))
 var IATA = os.Getenv("IATA")
 var probeDataType = utils.GetDataTypeFromEnv()
 var probeID = os.Getenv("PROBE_ID")
-var deltaTime = 10
 
 var messagePubHandler mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
 	fmt.Printf("Received message: %s from topic: %s\n", msg.Payload(), msg.Topic())
@@ -66,13 +65,16 @@ func main() {
 	}
 
 	for {
-		timeToString := strconv.Itoa(int(time.Now().UnixMilli()))
+		t := time.Now()
+		// YYYY-MM-DD-hh-mm-ss
 		value := model.ProbeMessage{
-			Data:      probe.readProbe(),
-			DataType:  probeDataType,
-			Timestamp: timeToString,
-			Id:        probeID,
-			IATA:      IATA,
+			Data:     probe.readProbe(),
+			DataType: probeDataType,
+			Timestamp: fmt.Sprintf("%d-%02d-%02d-%02d-%02d-%02d",
+				t.Year(), t.Month(), t.Day(),
+				t.Hour(), t.Minute(), t.Second()),
+			Id:   probeID,
+			IATA: IATA,
 		}
 
 		// ${IATA}:probe:${probtype}:${probeId}
