@@ -46,6 +46,32 @@ func HGet(key string, field string) (interface{}, error) {
 	return data, err
 }
 
+func HGetAll(key string) ([]string, error) {
+
+	conn := Pool.Get()
+	defer conn.Close()
+
+	data, err := redis.Strings(conn.Do("HGETALL", key))
+	fmt.Printf("key: %s\ndata: %s\n", key, data)
+	if err != nil {
+		return data, fmt.Errorf("error getting key %s: %v", key, err)
+	}
+	return data, err
+}
+
+func ZRANGEBYSCORE(key string, rangeMin string, rangeMax string) ([]string, error) {
+
+	conn := Pool.Get()
+	defer conn.Close()
+
+	data, err := redis.Strings(conn.Do("ZRANGEBYSCORE", key, rangeMin, rangeMax))
+	fmt.Printf("key: %s\nrangeMin: %s\nrangeMax: %s\n", key, rangeMin, rangeMax)
+	if err != nil {
+		return nil, fmt.Errorf("error getting key %s: %v", key, err)
+	}
+	return data, err
+}
+
 func Set(key string, value []byte) error {
 
 	conn := Pool.Get()

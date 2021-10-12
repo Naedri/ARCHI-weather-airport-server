@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"math/rand"
 	"meteo_des_aeroports/internal/model"
 	"meteo_des_aeroports/internal/utils"
@@ -33,23 +34,34 @@ var connectionLostHandler mqtt.ConnectionLostHandler = func(client mqtt.Client, 
 }
 
 type Probe struct {
-	probeType string
+	probeType utils.DataType
 	lastRead  time.Time
 	id        string
 	delta     float64
 }
 
-func (probe *Probe) readProbe() (value float64) {
+func (probe *Probe) readProbe(probeDataType utils.DataType) (value float64) {
+	switch probeDataType {
+	case utils.AtmosphericPressure:
+		return probe.generateProbeData(1013, 10, 0)
+	case utils.WindSpeed:
+		return probe.generateProbeData(10, 30, 0)
+	default:
+		return probe.generateProbeData(20, 20, math.Inf(-1))
+	}
+}
+
+func (probe *Probe) generateProbeData(average float64, delta float64, min float64) (value float64) {
 	p := perlin.NewPerlinRandSource(2.0, 2.0, 4, rand.NewSource(int64(3)))
-	v := 20 + p.Noise1D(probe.delta)*20
+	v := average + p.Noise1D(probe.delta)*delta
 	probe.delta += 0.1
 	probe.lastRead = time.Now()
-	return v
+	return math.Max(min, v)
 }
 
 func init() {
 	// Register the probe to redis
-	utils.HSET(fmt.Sprintf("%s:probes", IATA), probeID, []byte("true"))
+	utils.HSET(fmt.Sprintf("%s:probes:%s", IATA, probeDataType), probeID, []byte("true"))
 }
 
 func main() {
@@ -67,7 +79,7 @@ func main() {
 	for {
 		t := time.Now()
 		value := model.ProbeMessage{
-			Data:     probe.readProbe(),
+			Data:     probe.readProbe(probeDataType),
 			DataType: probeDataType,
 			// YYYY-MM-DD-hh-mm-ss
 			Timestamp: fmt.Sprintf("%d-%02d-%02d-%02d-%02d-%02d",

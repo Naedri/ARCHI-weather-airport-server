@@ -2,30 +2,25 @@ package utils
 
 import (
 	"os"
-	"strconv"
 )
 
-type DataType int
+type DataType string
 
 const (
-	Temperature DataType = iota
-	AtmosphericPressure
-	WindSpeed
+	Temperature         DataType = "temperature"
+	AtmosphericPressure DataType = "atmospheric"
+	WindSpeed           DataType = "wind_speed"
 )
 
-func readDataTypeFromEnv() int {
-	i, err := strconv.Atoi(os.Getenv("PROBE_DATATYPE"))
-	if err != nil || i < 0 {
-		i = 0
-	}
-	return i
+func readDataTypeFromEnv() string {
+	return os.Getenv("PROBE_DATATYPE")
 }
 
-func GetDataTypeFromEnv() string {
-	i := readDataTypeFromEnv()
-	return DataType(i).String()
+func convertDataType(dataType string) DataType {
+	return DataType(dataType)
 }
 
-func (d DataType) String() string {
-	return [...]string{"temperature", "atmospheric_pressure", "wind_speed"}[d]
+func GetDataTypeFromEnv() DataType {
+	return convertDataType(readDataTypeFromEnv())
+
 }

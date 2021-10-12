@@ -13,6 +13,6 @@ sub:
 	./subscriber
 
 http:
-	go build -o ./bin/httpServer ./cmd/httpServer/main.go
+	go build -o ./bin/httpServer ./cmd/httpServer/httpServer.go
 	cd ./bin/httpServer/ && \
 	./httpServer
