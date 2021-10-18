@@ -52,19 +52,16 @@ func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType
 }
 
 func GetAverageValueOfTheDay(iata string, date string) (string, error) {
-
-	layout := "2006-01-02"
 	var t time.Time
 
 	if date == "" {
 		t = time.Now().UTC()
 	} else {
-		var errorTime error
-		t, errorTime = time.Parse(layout, date)
-
-		if errorTime != nil {
-			return errorTime.Error(), errorTime
+		i, err := strconv.ParseInt(date, 10, 64)
+		if err != nil {
+			return err.Error(), err
 		}
+		t = time.Unix(i, 0).UTC()
 	}
 
 	var start time.Time = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
