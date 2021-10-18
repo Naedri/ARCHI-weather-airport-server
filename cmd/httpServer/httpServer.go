@@ -70,10 +70,15 @@ func main() {
 	router.GET("/iata/:IATA/probes/average", func(c echo.Context) error {
 		iata := c.Param("IATA")
 
-		result, err := handlers.GetAverageValueOfTheDay(iata)
+		date := c.QueryParam("date")
 
-		if err != nil {
-			return c.String(http.StatusBadRequest, err.Error())
+		var result string
+		var errAverage error
+
+		result, errAverage = handlers.GetAverageValueOfTheDay(iata, date)
+
+		if errAverage != nil {
+			return c.String(http.StatusBadRequest, errAverage.Error())
 		}
 
 		return c.String(http.StatusOK, result)

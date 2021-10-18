@@ -45,11 +45,29 @@ func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType
 	return result, nil
 }
 
-func GetAverageValueOfTheDay(iata string) (string, error) {
+func GetAverageValueOfTheDay(iata string, date string) (string, error) {
+
+	layout := "2000-12-31"
+	var t time.Time
+
+	if date == "" {
+		t = time.Now().UTC()
+	} else {
+		var errorTime error
+		t, errorTime = time.Parse(layout, date)
+
+		if errorTime != nil {
+			return errorTime.Error(), errorTime
+		}
+	}
+
+	var start time.Time = time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
+	var end time.Time = time.Date(t.Year(), t.Month(), t.Day()+1, 0, 0, 0, 0, t.Location())
+
 	result := "{"
 
 	for _, dataType := range utils.DataTypes {
-		if value, err := GetAverageValueOfTheDayOfDataType(iata, string(dataType)); err == nil {
+		if value, err := GetAverageValueOfTheDayOfDataType(iata, string(dataType), start, end); err == nil {
 			result += `"` + string(dataType) + `":` + value + ","
 		} else {
 			return err.Error(), err
@@ -64,7 +82,7 @@ func GetAverageValueOfTheDay(iata string) (string, error) {
 	return result, nil
 }
 
-func GetAverageValueOfTheDayOfDataType(iata string, dataType string) (string, error) {
+func GetAverageValueOfTheDayOfDataType(iata string, dataType string, start time.Time, end time.Time) (string, error) {
 	listProbes, err := utils.HGetAll(fmt.Sprintf("%s:probes:%s", iata, dataType))
 
 	fmt.Println(dataType)
@@ -72,9 +90,6 @@ func GetAverageValueOfTheDayOfDataType(iata string, dataType string) (string, er
 	if err != nil {
 		return err.Error(), err
 	}
-
-	end := time.Now().UTC()
-	var start time.Time = time.Date(end.Year(), end.Month(), end.Day(), 0, 0, 0, 0, end.Location())
 
 	var sum float64 = 0.0
 	var counter float64 = 0.0
