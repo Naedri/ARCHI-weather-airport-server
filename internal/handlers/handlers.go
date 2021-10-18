@@ -21,15 +21,21 @@ func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType
 		if index%2 == 0 {
 
 			result += fmt.Sprintf("\"%s\":[", probeId)
-			listData, err := utils.ZRANGEBYSCORE(fmt.Sprintf("%s:probe:%s:%s", iata, dataType, probeId), start, end)
+			listData, err := utils.ZRANGEBYSCOREWITHSCORES(fmt.Sprintf("%s:probe:%s:%s", iata, dataType, probeId), start, end)
 
 			if err != nil {
 				return err.Error(), err
 			}
 
-			for _, data := range listData {
-				result += data + ","
+			var value string
+			for index, data := range listData {
+				if index%2 == 0 {
+					value = data
+				} else {
+					result += `{"` + data + `":` + value + `},`
+				}
 			}
+
 			if len(listData) > 0 {
 				result = result[:len(result)-1]
 			}

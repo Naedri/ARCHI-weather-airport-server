@@ -72,6 +72,19 @@ func ZRANGEBYSCORE(key string, rangeMin string, rangeMax string) ([]string, erro
 	return data, err
 }
 
+func ZRANGEBYSCOREWITHSCORES(key string, rangeMin string, rangeMax string) ([]string, error) {
+
+	conn := Pool.Get()
+	defer conn.Close()
+
+	data, err := redis.Strings(conn.Do("ZRANGEBYSCORE", key, rangeMin, rangeMax, "WITHSCORES"))
+	fmt.Printf("key: %s\nrangeMin: %s\nrangeMax: %s\n", key, rangeMin, rangeMax)
+	if err != nil {
+		return nil, fmt.Errorf("error getting key %s: %v", key, err)
+	}
+	return data, err
+}
+
 func Set(key string, value []byte) error {
 
 	conn := Pool.Get()
