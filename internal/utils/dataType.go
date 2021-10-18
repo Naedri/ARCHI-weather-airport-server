@@ -12,6 +12,12 @@ const (
 	WindSpeed           DataType = "wind_speed"
 )
 
+var DataTypes = []DataType{
+	Temperature,
+	AtmosphericPressure,
+	WindSpeed,
+}
+
 func readDataTypeFromEnv() string {
 	return os.Getenv("PROBE_DATATYPE")
 }

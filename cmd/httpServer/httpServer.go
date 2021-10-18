@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"meteo_des_aeroports/internal/handlers"
 	"net/http"
 
@@ -38,23 +37,29 @@ func main() {
 		dataType := c.QueryParam("dataType")
 
 		if dataType == "" {
-			return errors.New("Demandez à Théo")
+			return c.String(http.StatusBadRequest, "dataType is required")
 		}
 
 		result, err := handlers.GetValueOfDataTypeWithRange(iata, start, end, dataType)
 
 		if err != nil {
-			c.String(http.StatusBadRequest, err.Error())
+			return c.String(http.StatusBadRequest, err.Error())
 		}
 
 		return c.String(http.StatusOK, result)
 	})
 
-	// router.GET("/iata/:IATA/probes/average", func(c echo.Context) error {
-	// 	iata := c.Param("IATA")
+	router.GET("/iata/:IATA/probes/average", func(c echo.Context) error {
+		iata := c.Param("IATA")
 
-	// 	return handlers.GetAverageValueOfTheDay(iata)
-	// })
+		result, err := handlers.GetAverageValueOfTheDay(iata)
+
+		if err != nil {
+			return c.String(http.StatusBadRequest, err.Error())
+		}
+
+		return c.String(http.StatusOK, result)
+	})
 
 	router.Logger.Fatal(router.Start(":8080"))
 }

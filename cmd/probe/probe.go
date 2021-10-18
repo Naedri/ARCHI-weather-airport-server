@@ -55,7 +55,7 @@ func (probe *Probe) generateProbeData(average float64, delta float64, min float6
 	p := perlin.NewPerlinRandSource(2.0, 2.0, 4, rand.NewSource(int64(3)))
 	v := average + p.Noise1D(probe.delta)*delta
 	probe.delta += 0.1
-	probe.lastRead = time.Now()
+	probe.lastRead = time.Now().UTC()
 	return math.Max(min, v)
 }
 
@@ -67,7 +67,7 @@ func init() {
 func main() {
 	probe := Probe{
 		probeType: probeDataType,
-		lastRead:  time.Now(),
+		lastRead:  time.Now().UTC(),
 		id:        probeID,
 		delta:     0,
 	}
@@ -77,7 +77,7 @@ func main() {
 	}
 
 	for {
-		t := time.Now()
+		t := time.Now().UTC()
 		value := model.ProbeMessage{
 			Data:     probe.readProbe(probeDataType),
 			DataType: probeDataType,
