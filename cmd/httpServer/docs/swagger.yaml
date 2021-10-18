@@ -26,6 +26,72 @@ paths:
       summary: Show the status of server.
       tags:
       - root
+  /iata/{iata}/probes:
+    get:
+      consumes:
+      - '*/*'
+      description: List measurement of specific type within range
+      parameters:
+      - description: IATA code of an airport
+        in: path
+        name: iata
+        required: true
+        type: string
+      - description: Start of range in UNIX format
+        in: query
+        name: start
+        type: integer
+      - description: End of range in UNIX format
+        in: query
+        name: end
+        type: integer
+      - description: specific type
+        in: query
+        name: dataType
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              items:
+                type: object
+              type: array
+            type: object
+      summary: Get Data for specific range and datatype
+      tags:
+      - root
+  /iata/{iata}/probes/average:
+    get:
+      consumes:
+      - '*/*'
+      description: Gives the average of all probes of an airport for each datatype
+        for a day
+      parameters:
+      - description: IATA code of an airport
+        in: path
+        name: iata
+        required: true
+        type: string
+      - description: the date of a specific day
+        in: query
+        name: date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: number
+            type: object
+      summary: Get the average of the data of a specific day
+      tags:
+      - root
 schemes:
 - http
 swagger: "2.0"

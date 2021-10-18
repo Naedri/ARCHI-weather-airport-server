@@ -41,46 +41,9 @@ func main() {
 		return c.String(http.StatusOK, "Welcome!")
 	})
 
-	router.GET("/iata/:IATA/probes", func(c echo.Context) error {
-		iata := c.Param("IATA")
-		start := c.QueryParam("start")
+	router.GET("/iata/:IATA/probes", DataWithRange)
 
-		if start == "" {
-			start = "-inf"
-		}
-
-		end := c.QueryParam("end")
-
-		if end == "" {
-			end = "+inf"
-		}
-
-		dataType := c.QueryParam("dataType")
-
-		if dataType == "" {
-			return c.String(http.StatusBadRequest, "dataType is required")
-		}
-
-		result, err := handlers.GetValueOfDataTypeWithRange(iata, start, end, dataType)
-
-		if err != nil {
-			return c.String(http.StatusBadRequest, err.Error())
-		}
-
-		return c.String(http.StatusOK, result)
-	})
-
-	router.GET("/iata/:IATA/probes/average", func(c echo.Context) error {
-		iata := c.Param("IATA")
-
-		result, err := handlers.GetAverageValueOfTheDay(iata)
-
-		if err != nil {
-			return c.String(http.StatusBadRequest, err.Error())
-		}
-
-		return c.String(http.StatusOK, result)
-	})
+	router.GET("/iata/:IATA/probes/average", DataAverageOfADay)
 
 	router.Logger.Fatal(router.Start(":8080"))
 }
@@ -97,4 +60,70 @@ func HealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})
+}
+
+// @Summary Get Data for specific range and datatype
+// @Description List measurement of specific type within range
+// @Tags root
+// @Accept */*
+// @Produce application/json
+// @Param iata path string true "IATA code of an airport"
+// @Param start query int false "Start of range in UNIX format"
+// @Param end query integer false "End of range in UNIX format"
+// @Param dataType query string true "specific type"
+// @Success 200 {object} map[string][]interface{}
+// @Router /iata/{iata}/probes [get]
+func DataWithRange(c echo.Context) error {
+	iata := c.Param("IATA")
+	start := c.QueryParam("start")
+
+	if start == "" {
+		start = "-inf"
+	}
+
+	end := c.QueryParam("end")
+
+	if end == "" {
+		end = "+inf"
+	}
+
+	dataType := c.QueryParam("dataType")
+
+	if dataType == "" {
+		return c.String(http.StatusBadRequest, "dataType is required")
+	}
+
+	result, err := handlers.GetValueOfDataTypeWithRange(iata, start, end, dataType)
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.String(http.StatusOK, result)
+}
+
+// @Summary Get the average of the data of a specific day
+// @Description Gives the average of all probes of an airport for each datatype for a day
+// @Tags root
+// @Accept */*
+// @Produce application/json
+// @Param iata path string true "IATA code of an airport"
+// @Param date query string false "the date of a specific day"
+// @Success 200 {object} map[string]float64
+// @Router /iata/{iata}/probes/average [get]
+func DataAverageOfADay(c echo.Context) error {
+	iata := c.Param("IATA")
+
+	date := c.QueryParam("date")
+
+	var result string
+	var errAverage error
+
+	result, errAverage = handlers.GetAverageValueOfTheDay(iata, date)
+
+	if errAverage != nil {
+		return c.String(http.StatusBadRequest, errAverage.Error())
+	}
+
+	return c.String(http.StatusOK, result)
 }
