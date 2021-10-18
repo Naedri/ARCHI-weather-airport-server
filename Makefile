@@ -23,6 +23,6 @@ exporter:
 	./exporter
 
 http:
-	go build -o ./bin/httpServer ./cmd/httpServer/httpServer.go
+	go build -o ./bin/httpServer/ ./cmd/httpServer/httpServer.go
 	cd ./bin/httpServer/ && \
 	./httpServer
