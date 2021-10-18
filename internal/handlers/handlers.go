@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"math"
 	"meteo_des_aeroports/internal/utils"
 	"strconv"
 	"time"
@@ -51,6 +52,11 @@ func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType
 	return result, nil
 }
 
+func isNumeric(s string) bool {
+	v, err := strconv.ParseFloat(s, 64)
+	return err == nil && !math.IsNaN(v)
+}
+
 func GetAverageValueOfTheDay(iata string, date string) (string, error) {
 	var t time.Time
 
@@ -71,6 +77,9 @@ func GetAverageValueOfTheDay(iata string, date string) (string, error) {
 
 	for _, dataType := range utils.DataTypes {
 		if value, err := GetAverageValueOfTheDayOfDataType(iata, string(dataType), start, end); err == nil {
+			if !isNumeric(value) {
+				value = "null"
+			}
 			result += `"` + string(dataType) + `":` + value + ","
 		} else {
 			return err.Error(), err
