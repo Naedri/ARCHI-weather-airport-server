@@ -43,18 +43,18 @@ type Probe struct {
 func (probe *Probe) readProbe(probeDataType utils.DataType) (value float64) {
 	switch probeDataType {
 	case utils.AtmosphericPressure:
-		return probe.generateProbeData(1013, 10, 0)
+		return probe.generateProbeData(1013, 10, 0, 0.1)
 	case utils.WindSpeed:
-		return probe.generateProbeData(10, 30, 0)
+		return probe.generateProbeData(10, 30, 0, 0.1)
 	default:
-		return probe.generateProbeData(20, 20, math.Inf(-1))
+		return probe.generateProbeData(20, 20, math.Inf(-1), 0.001)
 	}
 }
 
-func (probe *Probe) generateProbeData(average float64, delta float64, min float64) (value float64) {
+func (probe *Probe) generateProbeData(average float64, delta float64, min float64, deltaTime float64) (value float64) {
 	p := perlin.NewPerlinRandSource(2.0, 2.0, 4, rand.NewSource(int64(3)))
 	v := average + p.Noise1D(probe.delta)*delta
-	probe.delta += 0.1
+	probe.delta += deltaTime
 	probe.lastRead = time.Now().UTC()
 	return math.Max(min, v)
 }

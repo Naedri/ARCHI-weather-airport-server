@@ -29,7 +29,10 @@ func main() {
 
 	router.Use(middleware.Logger())
 	router.Use(middleware.Recover())
-
+	router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 	router.GET("/swagger/*", echoSwagger.WrapHandler)
 	router.GET("/", HealthCheck)
 
