@@ -53,7 +53,7 @@ func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType
 
 func GetAverageValueOfTheDay(iata string, date string) (string, error) {
 
-	layout := "2000-12-31"
+	layout := "2006-01-02"
 	var t time.Time
 
 	if date == "" {

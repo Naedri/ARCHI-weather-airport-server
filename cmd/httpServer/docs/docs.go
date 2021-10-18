@@ -51,6 +51,104 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/iata/{iata}/probes": {
+            "get": {
+                "description": "List measurement of specific type within range",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "root"
+                ],
+                "summary": "Get Data for specific range and datatype",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "IATA code of an airport",
+                        "name": "iata",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Start of range in UNIX format",
+                        "name": "start",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "End of range in UNIX format",
+                        "name": "end",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "specific type",
+                        "name": "dataType",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/iata/{iata}/probes/average": {
+            "get": {
+                "description": "Gives the average of all probes of an airport for each datatype for a day",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "root"
+                ],
+                "summary": "Get the average of the data of a specific day",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "IATA code of an airport",
+                        "name": "iata",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "the date of a specific day",
+                        "name": "date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }`
