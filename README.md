@@ -6,16 +6,36 @@ To build all files in bin/ :
 make build
 ```
 
-To run probe file :
+To build and launch a probe measurement :
 
 ```shell
 make probe
 ```
 
-To run subscriber file :
+To build and launch a subscriber :
 
 ```shell
 make sub
+```
+
+To build and launch the server :
+
+```shell
+make http
+```
+
+To launch the database :
+
+1. Firstly, launch the server to allow database requests and centralize the several communication modes :
+
+```
+redis serveur
+```
+
+2. Secondly, launch the redis client to allow redis to communicate
+
+```
+redis cli
 ```
 
 ## Composants
@@ -28,13 +48,13 @@ Broker MQTT : Moquitto (ou autre broker)
 
 ## Priorités
 
--   Capteur
--   Brokker MQTT
--   DB Redis (+ API Rest)
+- Capteur
+- Brokker MQTT
+- DB Redis (+ API Rest)
 
 ## Compétences à acquérir
 
--   DataBase REDIS
--   Protocole MQTT
--   Langage GO
--   Inteface Paho GO
+- DataBase REDIS
+- Protocole MQTT
+- Langage GO
+- Inteface Paho GO
