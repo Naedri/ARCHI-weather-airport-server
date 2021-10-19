@@ -17,7 +17,7 @@ func Ping() error {
 	conn := Pool.Get() //to get a connection from the pool
 	defer conn.Close() //to return the connection's resources to the pool.
 
-	_, err := redis.String(conn.Do("PING"))
+	_, err := redis.String(conn.Do("PING")) //generic method of conn interface to executing Redis commands
 	if err != nil {
 		return fmt.Errorf("cannot 'PING' db: %v", err)
 	}

@@ -11,7 +11,7 @@ import (
 
 type MqttConnection struct {
 	Client mqtt.Client
-	Topic  string
+	Topic  string //a client can only publish to an individual topic
 }
 
 var brokerURL = os.Getenv("MQTT_BROKER_URL")
@@ -29,16 +29,19 @@ func createClient(options *mqtt.ClientOptions) mqtt.Client {
 	return Client
 }
 
-//setting the options for the Client
+/*
+setting the options for the Client
+used to set broker, port, client id, callback and messagePubHandler.
+*/
 func SetUpClient(brokerURL string, clientID string, pubHand mqtt.MessageHandler, connectHand mqtt.OnConnectHandler, lostHand mqtt.ConnectionLostHandler) *mqtt.ClientOptions {
 	options := mqtt.NewClientOptions()
 	options.AddBroker(brokerURL)
 
-	options.SetClientID(clientID)
+	options.SetClientID(clientID) // identify each of the clients connecting to the MQTT broker
 
-	options.SetDefaultPublishHandler(pubHand)
-	options.OnConnect = connectHand
-	options.OnConnectionLost = lostHand
+	options.SetDefaultPublishHandler(pubHand) //  global MQTT pub message processing
+	options.OnConnect = connectHand           // callback for the connection
+	options.OnConnectionLost = lostHand       //  callback for connection loss
 
 	return options
 }
@@ -48,7 +51,7 @@ func GetClient(brokerURL string, clientID string, defaultMessagePubHandler mqtt.
 	return createClient(options)
 }
 
+// brokerURL and clientID are from the .env file
 func GetDefaultClient(defaultMessagePubHandler mqtt.MessageHandler, connectHandler mqtt.OnConnectHandler, connectionLostHandler mqtt.ConnectionLostHandler) mqtt.Client {
-	fmt.Printf("client id:%s\nbroker: %s\n", clientID, brokerURL)
 	return GetClient(brokerURL, clientID, defaultMessagePubHandler, connectHandler, connectionLostHandler)
 }

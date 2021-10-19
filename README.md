@@ -29,7 +29,7 @@ To launch the database :
 1. Firstly, launch the server to allow database requests and centralize the several communication modes :
 
 ```
-redis serveur
+redis server
 ```
 
 2. Secondly, launch the redis client to allow redis to communicate

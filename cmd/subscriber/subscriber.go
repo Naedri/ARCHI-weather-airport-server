@@ -15,6 +15,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+The subscribers are the clients of the broker.
+A subscriber subscribes to one (or more) topic in order to be notified of the arrival of new messages on the said topic (s).
+*/
+
 var (
 	qos, _        = strconv.Atoi(os.Getenv("MQTT_QOS"))
 	IATA          = os.Getenv("IATA")
@@ -64,5 +69,4 @@ func main() {
 
 	fmt.Printf("Subscribed to topic %s", topic)
 	<-c
-
 }
