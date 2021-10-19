@@ -7,10 +7,15 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+Redigo is a Go client for the Redis database with support for :
+Print-alike API, Pipelining (including transactions), Pub/Sub, Connection pooling and scripting.
+*/
+
 func Ping() error {
 
-	conn := Pool.Get()
-	defer conn.Close()
+	conn := Pool.Get() //to get a connection from the pool
+	defer conn.Close() //to return the connection's resources to the pool.
 
 	_, err := redis.String(conn.Do("PING"))
 	if err != nil {
