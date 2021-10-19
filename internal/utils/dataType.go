@@ -8,7 +8,7 @@ type DataType string
 
 const (
 	Temperature         DataType = "temperature"
-	AtmosphericPressure DataType = "atmospheric"
+	AtmosphericPressure DataType = "atmospheric_pressure"
 	WindSpeed           DataType = "wind_speed"
 )
 
