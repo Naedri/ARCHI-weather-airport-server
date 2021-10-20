@@ -41,7 +41,7 @@ func main() {
 		return c.String(http.StatusOK, "Welcome!")
 	})
 
-	router.GET("/iata/", allIATA)
+	router.GET("/iata", AllIATA)
 
 	router.GET("/iata/:IATA/probes", DataWithRange)
 
@@ -71,7 +71,7 @@ func HealthCheck(c echo.Context) error {
 // @Produce application/json
 // @Success 200 {object} [string]
 // @Router /iata [get]
-func allIATA(c echo.Context) error {
+func AllIATA(c echo.Context) error {
 	result, err := handlers.GetIATA()
 
 	if err != nil {

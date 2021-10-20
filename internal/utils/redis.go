@@ -2,10 +2,13 @@ package utils
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gomodule/redigo/redis"
 	_ "github.com/joho/godotenv/autoload"
 )
+
+var IataListName = "iata"
 
 func Ping() error {
 
@@ -112,7 +115,73 @@ func ZSet(key string, field string, value string) error {
 	return err
 }
 
-func HSET(key string, id string, value []byte) error {
+/*
+To create a Redis lists or to add an nonexistant element to it.
+Redis lists are linked lists of strings, sorted by insertion order.
+-ex: redis.SetAdd("iatas", []string{"NYC", "NTE"})
+*/
+func SetAdd(key string, value []byte) error {
+	conn := Pool.Get()
+	defer conn.Close()
+
+	_, err := redis.Strings(conn.Do("SADD", key, value))
+	if err != nil {
+		return fmt.Errorf("error setting key %s with value %v", key, value)
+	}
+	return err
+}
+
+/*
+-return: if member is a member of the set stored at key.
+*/
+func SisMember(key string, value byte) (int, error) {
+	conn := Pool.Get()
+	defer conn.Close()
+
+	data, err := redis.Strings(conn.Do("SISMEMBER", key, value))
+	count, _ := strconv.ParseInt(data[0], 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("error evaluating key %s includes %v", key, value)
+	}
+	return int(count), nil
+}
+
+/*
+-return: all the members of the set value stored at key.
+*/
+func SMembers(key string) ([]string, error) {
+	conn := Pool.Get()
+	defer conn.Close()
+
+	data, err := redis.Strings(conn.Do("SMEMBERS", key))
+	if err != nil {
+		return nil, fmt.Errorf("error listing elements from key %s", key)
+	}
+	return data, nil
+}
+
+/*
+To create a Redis Set.
+They are unordered collections of strings.
+-ex: redis.SSet("iata:NYC", map[string]int{"temperature": 1, "atmospheric_pressure": 0, "wind_speed": 0})
+*/
+func HMSet(key string, value []byte) error {
+	conn := Pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HMSET", key, value)
+	if err != nil {
+		return fmt.Errorf("error setting key %s with value %s", key, value)
+	}
+	return err
+
+}
+
+/*
+To update the value of a field in a redis hash retrievied by its key.
+-ex: redis.HSet("user:1000" "password" 12345)
+*/
+func HSet(key string, id string, value []byte) error {
 	conn := Pool.Get()
 	defer conn.Close()
 
