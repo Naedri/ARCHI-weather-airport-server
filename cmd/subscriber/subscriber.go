@@ -15,6 +15,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+The subscribers are the clients of the broker.
+A subscriber subscribes to one (or more) topic in order to be notified of the arrival of new messages on the said topic (s).
+Purpose : fill the redis data lake
+*/
 var IataListName = "iata"
 var iataRegistered = false
 
@@ -70,5 +75,4 @@ func main() {
 
 	fmt.Printf("Subscribed to topic %s", topic)
 	<-c
-
 }

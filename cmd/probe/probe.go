@@ -16,6 +16,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+The publisher sends a message on a particular topic.
+A publisher is not limited to a single topic, he can send several separate messages on different topics.
+*/
+
 var qos, _ = strconv.Atoi(os.Getenv("MQTT_QOS"))
 var IATA = os.Getenv("IATA")
 var probeDataType = utils.GetDataTypeFromEnv()

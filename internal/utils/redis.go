@@ -7,6 +7,14 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+Redigo is a Go client for the Redis database with support for :
+Print-alike API, Pipelining (including transactions), Pub/Sub, Connection pooling and scripting.
+*/
+
+/*
+Returns all fields and values of the hash stored at key.
+*/
 func HGetAll(key string) ([]string, error) {
 
 	conn := Pool.Get()
@@ -46,6 +54,11 @@ func ZRANGEBYSCOREWITHSCORES(key string, rangeMin string, rangeMax string) ([]st
 	return data, err
 }
 
+/*
+Ajoute tous les membres(field)-valeurs(value) indiqués à un ensemble TRIE identifié par une clé(key). 
+Si déjà un membre de l'ensemble trié -> maj et réinsertion
+Si clé existe mais ne contient pas d'ensemble trié -> return err
+*/
 func ZSet(key string, field string, value string) error {
 	conn := Pool.Get()
 	defer conn.Close()
