@@ -15,6 +15,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+var IataListName = "iata"
 var iataRegistered = false
 
 var (
@@ -51,7 +52,7 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
 	utils.ZSet(redisKey, dateToUnixMilli, value)
 	if !iataRegistered {
-		err := utils.SetAdd(utils.IataListName, []byte(toJson.IATA))
+		err := utils.SetAdd(IataListName, []byte(toJson.IATA))
 		if err == nil {
 			iataRegistered = true
 		}

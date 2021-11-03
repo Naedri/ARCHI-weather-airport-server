@@ -8,11 +8,13 @@ import (
 	"time"
 )
 
+var IataListName = "iata"
+
 /*
 -return: array of iata airports
 */
 func GetIATA() (string, error) {
-	listIATA, err := utils.SMembers(utils.IataListName)
+	listIATA, err := utils.SMembers(IataListName)
 
 	if err != nil {
 		return err.Error(), err
