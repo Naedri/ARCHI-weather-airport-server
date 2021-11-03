@@ -59,11 +59,6 @@ func (probe *Probe) generateProbeData(average float64, delta float64, min float6
 	return math.Max(min, v)
 }
 
-func init() {
-	// Register the probe to redis
-	utils.HSet(fmt.Sprintf("%s:probes:%s", IATA, probeDataType), probeID, []byte("true"))
-}
-
 func main() {
 	probe := Probe{
 		probeType: probeDataType,

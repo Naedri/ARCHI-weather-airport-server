@@ -62,7 +62,7 @@ To create a Redis lists or to add an nonexistant element to it.
 Redis lists are linked lists of strings, sorted by insertion order.
 -ex: redis.SetAdd("iatas", []string{"NYC", "NTE"})
 */
-func SetAdd(key string, value []byte) error {
+func SetAdd(key string, value string) error {
 	conn := Pool.Get()
 	defer conn.Close()
 
@@ -91,7 +91,7 @@ func SMembers(key string) ([]string, error) {
 To update the value of a field in a redis hash retrievied by its key.
 -ex: redis.HSet("user:1000" "password" 12345)
 */
-func HSet(key string, id string, value []byte) error {
+func HSet(key string, id string, value string) error {
 	conn := Pool.Get()
 	defer conn.Close()
 

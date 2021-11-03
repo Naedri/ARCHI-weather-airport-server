@@ -50,13 +50,10 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	t := toJson.Timestamp
 	dateValue, _ := time.Parse("2006-01-02-15-04-05", t)
 	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
+
 	utils.ZSet(redisKey, dateToUnixMilli, value)
-	if !iataRegistered {
-		err := utils.SetAdd(IataListName, []byte(toJson.IATA))
-		if err == nil {
-			iataRegistered = true
-		}
-	}
+	utils.SetAdd(IataListName, toJson.IATA)
+	utils.HSet(fmt.Sprintf("%s:probes:%s", toJson.IATA, toJson.DataType), toJson.Id, "true")
 }
 
 func main() {
