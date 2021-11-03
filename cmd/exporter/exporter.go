@@ -16,6 +16,11 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 )
 
+/*
+The subscribers are the clients of the broker.
+A subscriber subscribes to one (or more) topic in order to be notified of the arrival of new messages on the said topic (s).
+Purpose : to create .csv files stored in the local files of the server
+*/
 var (
 	qos, _ = strconv.Atoi(os.Getenv("MQTT_QOS"))
 )
