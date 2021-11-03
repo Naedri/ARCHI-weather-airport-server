@@ -8,8 +8,13 @@ import (
 	"time"
 )
 
+var IataListName = "iata"
+
+/*
+-return: array of iata airports
+*/
 func GetIATA() (string, error) {
-	listIATA, err := utils.HGetAll(fmt.Sprintf(""))
+	listIATA, err := utils.SMembers(IataListName)
 
 	if err != nil {
 		return err.Error(), err
@@ -19,10 +24,11 @@ func GetIATA() (string, error) {
 	result = "["
 
 	for index := 0; index < len(listIATA); index++ {
+		result += fmt.Sprintf("\"%s\"", listIATA[index])
 		result += ","
 	}
 
-	if len(listIATA) > 1 {
+	if len(listIATA) >= 1 {
 		result = result[:len(result)-1]
 	}
 	result += "]"

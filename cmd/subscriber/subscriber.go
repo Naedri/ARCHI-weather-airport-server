@@ -19,6 +19,8 @@ import (
 The subscribers are the clients of the broker.
 A subscriber subscribes to one (or more) topic in order to be notified of the arrival of new messages on the said topic (s).
 */
+var IataListName = "iata"
+var iataRegistered = false
 
 var (
 	qos, _        = strconv.Atoi(os.Getenv("MQTT_QOS"))
@@ -53,6 +55,12 @@ var probeDataHandler = func(clien mqtt.Client, msg mqtt.Message) {
 	dateValue, _ := time.Parse("2006-01-02-15-04-05", t)
 	dateToUnixMilli := strconv.Itoa(int(dateValue.Unix()))
 	utils.ZSet(redisKey, dateToUnixMilli, value)
+	if !iataRegistered {
+		err := utils.SetAdd(IataListName, []byte(toJson.IATA))
+		if err == nil {
+			iataRegistered = true
+		}
+	}
 }
 
 func main() {
