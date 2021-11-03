@@ -8,6 +8,34 @@ import (
 	"time"
 )
 
+var IataListName = "iata"
+
+/*
+-return: array of iata airports
+*/
+func GetIATA() (string, error) {
+	listIATA, err := utils.SMembers(IataListName)
+
+	if err != nil {
+		return err.Error(), err
+	}
+
+	var result string
+	result = "["
+
+	for index := 0; index < len(listIATA); index++ {
+		result += fmt.Sprintf("\"%s\"", listIATA[index])
+		result += ","
+	}
+
+	if len(listIATA) >= 1 {
+		result = result[:len(result)-1]
+	}
+	result += "]"
+
+	return result, nil
+}
+
 func GetValueOfDataTypeWithRange(iata string, start string, end string, dataType string) (string, error) {
 	listProbes, err := utils.HGetAll(fmt.Sprintf("%s:probes:%s", iata, dataType))
 

@@ -41,6 +41,8 @@ func main() {
 		return c.String(http.StatusOK, "Welcome!")
 	})
 
+	router.GET("/iata", AllIATA)
+
 	router.GET("/iata/:IATA/probes", DataWithRange)
 
 	router.GET("/iata/:IATA/probes/average", DataAverageOfADay)
@@ -60,6 +62,23 @@ func HealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"data": "Server is up and running",
 	})
+}
+
+// @Summary Get all IATA available in the database
+// @Description List iata airport
+// @Tags root
+// @Accept */*
+// @Produce application/json
+// @Success 200 {object} [string]
+// @Router /iata [get]
+func AllIATA(c echo.Context) error {
+	result, err := handlers.GetIATA()
+
+	if err != nil {
+		return c.String(http.StatusBadRequest, err.Error())
+	}
+
+	return c.String(http.StatusOK, result)
 }
 
 // @Summary Get Data for specific range and datatype
