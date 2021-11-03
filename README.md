@@ -2,40 +2,40 @@
 
 To build all files in bin/ :
 
-```shell
+```bash
 make build
+```
+
+To build and launch the api framework :
+
+```bash
+make http
+```
+
+To build and launch both subscribers (to fulfill redis database and csv file) :
+
+```bash
+make sub
 ```
 
 To build and launch a probe measurement :
 
-```shell
+```bash
 make probe
-```
-
-To build and launch a subscriber :
-
-```shell
-make sub
-```
-
-To build and launch the server :
-
-```shell
-make http
 ```
 
 To launch the database :
 
 1. Firstly, launch the server to allow database requests and centralize the several communication modes :
 
-```
-redis server
+```bash
+redis-server
 ```
 
-2. Secondly, launch the redis client to allow redis to communicate
+2. Secondly, launch the redis client to interact with the redis database
 
-```
-redis cli
+```bash
+redis-cli
 ```
 
 ## Composants
