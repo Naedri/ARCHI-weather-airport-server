@@ -1,5 +1,7 @@
 # Météo des aéroports
 
+## Using the app
+
 To build all files in bin/ :
 
 ```bash
@@ -38,23 +40,22 @@ redis-server
 redis-cli
 ```
 
-## Composants
+## Skills acquired
 
-Protocoles utilisés : MQTT & HTTP
-
-Database NoSQL Key-Value : REDIS (ou autre base NoSQL)
-
-Broker MQTT : Moquitto (ou autre broker)
-
-## Priorités
-
-- Capteur
-- Brokker MQTT
-- DB Redis (+ API Rest)
-
-## Compétences à acquérir
+Thanks to this project we have been able to increase our skills on the following technologies :
 
 - DataBase REDIS
-- Protocole MQTT
+- Protocole with MQTT Brokker
 - Langage GO
 - Inteface Paho GO
+
+## Architecture
+
+### Components
+
+The following components are communicating with MQTT and HTTP
+
+- Broker MQTT : Moquitto
+- Database NoSQL Key-Value : REDIS
+
+<p><img alt="Architecture" src="./docs/Architecture.svg" height="400"></p>
