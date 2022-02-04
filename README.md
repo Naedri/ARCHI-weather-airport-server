@@ -1,6 +1,6 @@
 # Météo des aéroports
 
-A Go project to save data from multiple sensors using a MQTT broker into a Redis database accessible by an Echo Rest API. 
+A Go project to save data from multiple weather sensors using a MQTT broker into a Redis database accessible by an Echo Rest API. 
  
 ## Using the app
 
