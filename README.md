@@ -61,3 +61,5 @@ The following components are communicating with MQTT and HTTP
 - Database NoSQL Key-Value : REDIS
 
 <p><img alt="Architecture" src="./docs/Architecture.svg" height="400"></p>
+
+The react client application is available to the following page : [aeroport_sim](https://github.com/Naedri/aeroport_sim)
