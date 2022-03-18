@@ -12,7 +12,7 @@ make build
 
 which will allow you to add the following `.env` files for the given path :
 
-- bin/probe/.env
+- `bin/probe/.env`
 
 ```env
 MQTT_QOS=0
@@ -23,7 +23,7 @@ PROBE_DATATYPE=temperature
 PROBE_ID=probeId-123
 ```
 
-- bin/subscriber/.env
+- `bin/subscriber/.env`
 
 ```env
 MQTT_QOS=0
