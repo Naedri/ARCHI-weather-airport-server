@@ -1,34 +1,58 @@
 # Météo des aéroports
 
-A Go project to save data from multiple weather sensors using a MQTT broker into a Redis database accessible by an Echo Rest API. 
- 
+A Go project to save data from multiple weather sensors using a MQTT broker into a Redis database accessible by an Echo Rest API.
+
 ## Using the app
 
-To build all files in bin/ :
+### To build all files in bin/
 
 ```bash
 make build
 ```
 
-To build and launch the api framework :
+which will allow you to add the following `.env` files for the given path :
+
+- bin/probe/.env
+
+```env
+MQTT_QOS=0
+MQTT_BROKER_URL=tcp://localhost:1883
+MQTT_CLIENT_ID=probeId-123
+IATA=NYC
+PROBE_DATATYPE=temperature
+PROBE_ID=probeId-123
+```
+
+- bin/subscriber/.env
+
+```env
+MQTT_QOS=0
+MQTT_BROKER_URL=tcp://localhost:1883
+MQTT_CLIENT_ID=subId-123
+IATA=NYC
+PROBE_DATATYPE=temperature
+PROBE_ID=+
+```
+
+### To build and launch the api framework
 
 ```bash
 make http
 ```
 
-To build and launch both subscribers (to fulfill redis database and csv file) :
+### To build and launch both subscribers (to fulfill redis database and csv file)
 
 ```bash
 make sub
 ```
 
-To build and launch a probe measurement :
+### To build and launch a probe measurement
 
 ```bash
 make probe
 ```
 
-To launch the database :
+### To launch the database
 
 1. Firstly, launch the server to allow database requests and centralize the several communication modes :
 
