@@ -31,7 +31,7 @@ MQTT_BROKER_URL=tcp://localhost:1883
 MQTT_CLIENT_ID=subId-123
 IATA=NYC
 PROBE_DATATYPE=temperature
-PROBE_ID=+
+PROBE_ID=subId-123
 ```
 
 ### To build and launch the api framework
