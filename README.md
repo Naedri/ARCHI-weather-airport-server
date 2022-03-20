@@ -1,4 +1,4 @@
-# Météo des aéroports
+# ARCHI weather airport server
 
 A Go project to save data from multiple weather sensors using a MQTT broker into a Redis database accessible by an Echo Rest API.
 
